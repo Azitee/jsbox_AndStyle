@@ -1,6 +1,6 @@
 "use strict";
 
-const andstyle = require("scripts/AndStyle/main");
+const andstyle = require("scripts/AndStyle");
 
 var components = [
   {
