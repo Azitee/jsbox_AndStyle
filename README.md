@@ -48,9 +48,32 @@ selectedLineColor | $color | $color("tint") | 编辑时线条颜色
 
 支持原控件所有属性
 
+## video -> andstyle_video
+
+原生video控件加强，支持设置播放时间，播放倍速
+
+独有属性 | 类型 | 默认值 | 说明
+---|---|---|---
+controls | boolean | true | 是否显示控制条
+
+这个控件本质是一个web控件，可以用notify来调用它的方法
+
+方法 | 说明
+---|---
+play | 开始播放
+pause | 暂停
+getCurrentTime | 获取当前播放时间和总时长
+setProgress | 设定时间
+setRate | 设定播放速率
+
+### events:getCurrentTime
+用getCurrentTime之后可以在这里获取到时长
+
 ## SettingList
 
-设置样式的列表，右边加上箭头，没什么好说的
+设置样式的列表，cell可以自定义成switch或者tab
+
+例子去main.js里看
 
 ## TabLayout
 
@@ -73,7 +96,6 @@ onTabSelected: (index, title) => {
 
 }
 ```
-
 
 ## ViewPager
 
@@ -175,23 +197,48 @@ andstyle.alert("message")
 
 手动消除`alert`创建的弹窗
 
-# 四、构造函数
+## addComponent()
 
-用来创建AndStyle控件
+添加一个自定义的控件
 
-构造函数 | 对应控件类型
+首先创建一个类，继承自`andstyle.Component`（禁止吐槽神似某act）或者一个andstyle控件
+
+```js
+class test extends andstyle.Component {
+  constructor(obj) {
+    super(obj);
+    this. ...
+  }
+}
+```
+
+调用`addComponent`，依次传入`类`,`type`,`继承的控件`
+
+```js
+andstyle.addComponent(test, "test", "view");
+```
+
+然后就可以在`andstyle.render()`里用了
+
+AndStyle内置的控件就是类似这样被创建的，可以去`AndStye/class.js`里看实例
+
+# 四、内置的类
+
+名称 | 对应控件类型
 ---|---
 Button | andstyle_button
 Spinner | andstyle_spinner
 SettingList | SettingList
 Slider | andstyle_slider
+Input | andstyle_input
 TabLayout | TabLayout
 ViewPager | ViewPager
-Ripple | /
+Ripple | https://github.com/Azitee/jsbox_ripple
 
 🌰栗子:
 
 ```js
+const andstyle = require("AndStyle/main")
 const ANDStyleButton = new andstyle.Button({
   type: "button",
   props: {
@@ -211,9 +258,8 @@ $ui.window.add(ANDStyleButton)
 - 大部分属性都是只写，并且无法动态更改（以后可能会改进？
 - 每个AndStyle控件的id都要唯一，若不在props里填写id，将会自动分配一个唯一id
 - 控件的info属性不要乱填，可能会有`八哥`
+- 控件props里如果有控件（比如stack，list，matrix控件），不会自动转换，请手动用`changeStyle`方法
 
-#  
-
->v1.0.0
-更新&反馈请前往`钙`hub >> https://github.com/Azitee/jsbox_AndStyle
+>v1.0.2
+更新&反馈请前往钙hub >> https://github.com/Azitee/jsbox_AndStyle
 or 联系 hehedahhd@icloud.com
