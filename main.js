@@ -1,6 +1,6 @@
 "use strict";
 
-const andstyle = require("scripts/AndStyle");
+require("scripts/AndStyle/main");
 
 var components = [
   {
@@ -37,7 +37,7 @@ var components = [
           },
           events: {
             tapped: function(sender) {
-              andstyle.setAttribute(sender, "title", "Tapped");
+              $ui.andstyle.setAttribute(sender, "title", "Tapped");
             }
           }
         }
@@ -62,7 +62,7 @@ var components = [
                     title: "0-2",
                     on: false,
                     changed: sender => {
-                      andstyle.alert(sender.on);
+                      $ui.andstyle.alert(sender.on);
                     }
                   }
                 ]
@@ -78,7 +78,7 @@ var components = [
                     index: 0,
                     items: ["item1", "item2", "item3"],
                     changed: sender => {
-                      andstyle.alert(sender.items[sender.index]);
+                      $ui.andstyle.alert(sender.items[sender.index]);
                     }
                   }
                 ]
@@ -88,7 +88,7 @@ var components = [
           layout: $layout.fill,
           events: {
             didSelect: function(tableView, indexPath, item) {
-              andstyle.alert(item.title.text);
+              $ui.andstyle.alert(item.title.text);
             }
           }
         }
@@ -214,7 +214,7 @@ var components = [
             data: [
               {
                 title: "Default",
-                rows: andstyle.changeStyle([
+                rows: $ui.andstyle.changeStyle([
                   {
                     type: "andstyle_input",
                     props: {
@@ -231,7 +231,7 @@ var components = [
               },
               {
                 title: "Secure",
-                rows: andstyle.changeStyle([
+                rows: $ui.andstyle.changeStyle([
                   {
                     type: "andstyle_input",
                     props: {
@@ -363,31 +363,63 @@ var components = [
   {
     name: "Custom Component",
     run: function() {
-      class CustomComponent extends andstyle.Component {
+      class Linger extends $ui.andstyle.Component {
         constructor(obj) {
           super(obj);
           this.events.draw = (view, ctx) => {
-            var centerX = view.frame.width * 0.5;
-            var centerY = view.frame.height * 0.3;
-            var radius = 50.0;
-            ctx.fillColor = obj.props.fillColor || $color("red");
-            ctx.moveToPoint(centerX, centerY - radius);
-            for (var i = 1; i < 5; ++i) {
-              var x = radius * Math.sin(i * Math.PI * 0.8);
-              var y = radius * Math.cos(i * Math.PI * 0.8);
-              ctx.addLineToPoint(x + centerX, centerY - y);
-            }
+            let height = view.frame.height,
+              width = view.frame.width,
+              centerY = height / 2,
+              centerX = width / 2;
+            ctx.fillColor = ctx.strokeColor = obj.props.fillColor
+            ctx.setLineWidth(3);
+            ctx.beginPath();
+            //轮廓
+            ctx.addArc(centerX, centerY, 100, 0, Math.PI * 2, false);
+            ctx.strokePath();
+            //左眼
+            ctx.addArc(centerX - 40, centerY - 20, 15, 0, Math.PI * 2, false);
+            ctx.fillPath();
+            //右眼
+            ctx.addArc(centerX + 40, centerY - 20, 15, 0, Math.PI * 2, false);
+            ctx.fillPath();
+            //左瓣嘴
+            ctx.addArc(
+              centerX - 10,
+              centerY + 30,
+              10,
+              Math.PI * 2,
+              Math.PI,
+              false
+            );
+            ctx.strokePath();
+            //右瓣嘴
+            ctx.addArc(
+              centerX + 10,
+              centerY + 30,
+              10,
+              Math.PI * 2,
+              Math.PI,
+              false
+            );
+            ctx.strokePath();
+            ctx.fillColor = $color("white");
+            //左眼高光
+            ctx.addArc(centerX - 45, centerY - 25, 5, 0, Math.PI * 2, false);
+            ctx.fillPath();
+            //右高光
+            ctx.addArc(centerX + 35, centerY - 25, 5, 0, Math.PI * 2, false);
             ctx.fillPath();
           };
         }
       }
-      andstyle.addComponent(CustomComponent, "CustomComponent", "canvas");
-      andstyle.push({
+      $ui.andstyle.addComponent(Linger, "Linger", "canvas");
+      $ui.andstyle.push({
         views: [
           {
-            type: "CustomComponent",
+            type: "Linger",
             props: {
-              fillColor: $color("blue")
+              fillColor: $color("black")
             },
             layout: $layout.fill
           }
@@ -401,16 +433,16 @@ var api = [
   {
     name: "hintView",
     run: async function() {
-      let message = await andstyle.hintView("title", "button", "text");
+      let message = await $ui.andstyle.hintView("title", "button", "text");
       console.log(message);
     }
   },
   {
     name: "Loading View",
     run: async function() {
-      andstyle.startLoading($color("white"), $color("black"));
+      $ui.andstyle.startLoading($color("white"), $color("black"));
       await $wait(1);
-      andstyle.stopLoading();
+      $ui.andstyle.stopLoading();
     }
   },
   {
@@ -421,7 +453,7 @@ var api = [
       $ui.loading(false);
       data = data.data;
       let message = `${data.hitokoto}\n\nby ${data.author}（${data.source}）`;
-      andstyle.alert({
+      $ui.andstyle.alert({
         message: message,
         shadowColor: "black",
         bgcolor: $color("black"),
@@ -432,14 +464,14 @@ var api = [
             color: $color("white"),
             handler: () => {
               $clipboard.text = message.replace(/\n/g, " ");
-              andstyle.dismissAlert();
+              $ui.andstyle.dismissAlert();
             }
           },
           {
             title: "Cancel",
             color: $color("white"),
             handler: () => {
-              andstyle.dismissAlert();
+              $ui.andstyle.dismissAlert();
             }
           }
         ]
@@ -473,7 +505,7 @@ var data = [
   }
 ];
 
-andstyle.render({
+$ui.andstyle.render({
   props: {
     title: "AndStyle"
   },
@@ -491,7 +523,7 @@ andstyle.render({
           if (indexPath.section == 0) {
             if (indexPath.row == components.length - 1) {
               components[indexPath.row].run();
-            } else andstyle.push(components[indexPath.row].page);
+            } else $ui.andstyle.push(components[indexPath.row].page);
           } else api[indexPath.row].run();
         }
       }
