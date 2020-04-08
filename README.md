@@ -4,6 +4,8 @@
 
 一开始想的是仿安卓风，但后来发现太难仿了，仿出来都是半苹果半安卓风格，那干脆就不要专门仿安卓而是美化控件好了。于是起名就把Android切一半叫AndStyle
 
+>导入`AndStyle.js`后可以用`$ui.andstyle`调用它的方法，这样只需导入一次就可以在所有脚本中使用了，并且看起来更像原生接口
+
 # 二、控件
 
 ## button -> andstyle_button
@@ -50,7 +52,7 @@ selectedLineColor | $color | $color("tint") | 编辑时线条颜色
 
 ## video -> andstyle_video
 
-原生video控件加强，支持设置播放时间，播放倍速
+原生video控件加强，支持设置播放时间，播放倍速（某些系统版本可能有bug）
 
 独有属性 | 类型 | 默认值 | 说明
 ---|---|---|---
@@ -105,6 +107,16 @@ pages | array | 无 | (必填)每一页的view
 setupWithTabLayout | string | 无 | (填写TabLayout的id)与TabLayout控件绑定
 index | number | 0 | 被选中的index
 
+### events:onPageSelected
+
+切换到某页面时回调
+
+```js
+onPageSelected: (index) => {
+  
+}
+```
+
 ViewPager本质上是一个`scroll`控件，所以支持scroll的所有属性事件，但也不要乱加，可能会出现`八哥`
 
 # 三、API
@@ -120,7 +132,7 @@ ViewPager本质上是一个`scroll`控件，所以支持scroll的所有属性事
 >下面两块代码效果相同
 
 ```js
-andstyle.render({
+$ui.andstyle.render({
   views: [
     {
       type: "andstyle_button",
@@ -134,7 +146,7 @@ andstyle.render({
 
 ```js
 $ui.render({
-  views: andstyle.changeStyle([
+  views: $ui.andstyle.changeStyle([
     {
       type: "andstyle_button",
       props: {
@@ -150,7 +162,7 @@ $ui.render({
 改变某个AndStyle控件的某个属性
 
 ```js
-andstyle.setAttribute($("button"), "title", "Tapped"); //修改$("button")的title为"Tapped"
+$ui.andstyle.setAttribute($("button"), "title", "Tapped"); //修改$("button")的title为"Tapped"
 ```
 
 ## hintView(title, buttonTitle, text)
@@ -169,7 +181,7 @@ andstyle.setAttribute($("button"), "title", "Tapped"); //修改$("button")的tit
 
 ## alert(object)
 
-仿Safari弹窗，main.js里的是一个获取一言的🌰
+仿Safari弹窗，main.js里的是一个获取一言的实例
 
 属性 | 类型 | 说明
 ---|---|---
@@ -190,7 +202,7 @@ handler | function | 顾名思义
 传入的参数也可以是string，比如
 
 ```js
-andstyle.alert("message")
+$ui.andstyle.alert("message")
 ```
 
 ## dismissAlert()
@@ -201,10 +213,10 @@ andstyle.alert("message")
 
 添加一个自定义的控件
 
-首先创建一个类，继承自`andstyle.Component`（禁止吐槽神似某act）或者一个andstyle控件
+首先创建一个类，继承自`$ui.andstyle.Component`（禁止吐槽神似某act）或者一个andstyle控件
 
 ```js
-class test extends andstyle.Component {
+class test extends $ui.andstyle.Component {
   constructor(obj) {
     super(obj);
     this. ...
@@ -215,14 +227,14 @@ class test extends andstyle.Component {
 调用`addComponent`，依次传入`类`,`type`,`继承的控件`
 
 ```js
-andstyle.addComponent(test, "test", "view");
+$ui.andstyle.addComponent(test, "test", "view");
 ```
 
-然后就可以在`andstyle.render()`里用了
+然后就可以在`$ui.andstyle.render()`里用了
 
 AndStyle内置的控件就是类似这样被创建的，可以去`AndStye/class.js`里看实例
 
-# 四、内置的类
+# 四、类
 
 名称 | 对应控件类型
 ---|---
@@ -233,13 +245,14 @@ Slider | andstyle_slider
 Input | andstyle_input
 TabLayout | TabLayout
 ViewPager | ViewPager
+Video | Video
 Ripple | https://github.com/Azitee/jsbox_ripple
 
-🌰栗子:
+栗子:
 
 ```js
 const andstyle = require("AndStyle/main")
-const ANDStyleButton = new andstyle.Button({
+const ANDStyleButton = new $ui.andstyle.Button({
   type: "button",
   props: {
     title: "Button"
@@ -252,6 +265,12 @@ const ANDStyleButton = new andstyle.Button({
 $ui.window.add(ANDStyleButton)
 ```
 
+## Popup (不完善)
+
+创建一个PopupView
+
+使用方法看main.js里的实例
+
 # 五、注意事项
 
 - 更改AndStyle控件的某个属性时最好用`setAttribute`，不然可能改不了
@@ -260,6 +279,6 @@ $ui.window.add(ANDStyleButton)
 - 控件的info属性不要乱填，可能会有`八哥`
 - 控件props里如果有控件（比如stack，list，matrix控件），不会自动转换，请手动用`changeStyle`方法
 
->v1.0.2
+>v1.0.4
 更新&反馈请前往钙hub >> https://github.com/Azitee/jsbox_AndStyle
 or 联系 hehedahhd@icloud.com
