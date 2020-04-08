@@ -1,6 +1,6 @@
 "use strict";
 
-require("scripts/AndStyle/main");
+require("scripts/andstyle");
 
 var components = [
   {
@@ -199,6 +199,11 @@ var components = [
           layout: (make, view) => {
             make.right.left.bottom.inset(0);
             make.top.equalTo(view.prev.bottom);
+          },
+          events: {
+            onPageSelected:(index)=>{
+              console.log(index)
+            }
           }
         }
       ]
@@ -371,19 +376,15 @@ var components = [
               width = view.frame.width,
               centerY = height / 2,
               centerX = width / 2;
-            ctx.fillColor = ctx.strokeColor = obj.props.fillColor
+            ctx.fillColor = ctx.strokeColor = obj.props.fillColor;
             ctx.setLineWidth(3);
             ctx.beginPath();
-            //轮廓
             ctx.addArc(centerX, centerY, 100, 0, Math.PI * 2, false);
             ctx.strokePath();
-            //左眼
             ctx.addArc(centerX - 40, centerY - 20, 15, 0, Math.PI * 2, false);
             ctx.fillPath();
-            //右眼
             ctx.addArc(centerX + 40, centerY - 20, 15, 0, Math.PI * 2, false);
             ctx.fillPath();
-            //左瓣嘴
             ctx.addArc(
               centerX - 10,
               centerY + 30,
@@ -393,7 +394,6 @@ var components = [
               false
             );
             ctx.strokePath();
-            //右瓣嘴
             ctx.addArc(
               centerX + 10,
               centerY + 30,
@@ -404,10 +404,8 @@ var components = [
             );
             ctx.strokePath();
             ctx.fillColor = $color("white");
-            //左眼高光
             ctx.addArc(centerX - 45, centerY - 25, 5, 0, Math.PI * 2, false);
             ctx.fillPath();
-            //右高光
             ctx.addArc(centerX + 35, centerY - 25, 5, 0, Math.PI * 2, false);
             ctx.fillPath();
           };
@@ -476,6 +474,28 @@ var api = [
           }
         ]
       });
+    }
+  },
+  {
+    name: "Popup View",
+    run: function() {
+      let popupView = new $ui.andstyle.Popup({
+        views:[{
+          type:"button",
+          props: {
+            title:"Button"
+          },
+          layout: (make, view) => {
+            make.center.equalTo(view.super)
+          },
+          events: {
+            tapped(){
+              popupView.dismiss()
+            }
+          }
+        }]
+      })
+      popupView.show()
     }
   }
 ];
