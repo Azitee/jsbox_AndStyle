@@ -121,6 +121,44 @@ var components = [
     }
   },
   {
+    name: "TabLayout",
+    page: {
+      views: [
+        {
+          type: "TabLayout",
+          props: {
+            tabTextColor: $color("gray"),
+            tabSelectedTextColor: $color("black"),
+            tabIndicatorHeight: 0,
+            tabs: [
+              {
+                title: "Home",
+                icon: "102"
+              },
+              {
+                title: "Favorite",
+                icon: "061"
+              },
+              {
+                title: "Settings",
+                icon: "002"
+              }
+            ]
+          },
+          layout: (make, view) => {
+            make.bottom.right.left.equalTo(view.super.safeArea);
+            make.height.equalTo(50);
+          },
+          events: {
+            onTabSelected: (index, title) => {
+              console.log(index, title);
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
     name: "TabLayout & ViewPager",
     page: {
       props: {
@@ -201,8 +239,8 @@ var components = [
             make.top.equalTo(view.prev.bottom);
           },
           events: {
-            onPageSelected:(index)=>{
-              console.log(index)
+            onPageSelected: index => {
+              console.log(index);
             }
           }
         }
@@ -446,22 +484,16 @@ var api = [
   {
     name: "Alert",
     run: async function() {
-      $ui.loading(true);
-      let data = await $http.get("https://api.ooopn.com/yan/api.php");
-      $ui.loading(false);
-      data = data.data;
-      let message = `${data.hitokoto}\n\nby ${data.author}（${data.source}）`;
       $ui.andstyle.alert({
-        message: message,
+        message: "Hello World.",
         shadowColor: "black",
         bgcolor: $color("black"),
         textColor: $color("white"),
         actions: [
           {
-            title: "Copy",
+            title: "OK",
             color: $color("white"),
             handler: () => {
-              $clipboard.text = message.replace(/\n/g, " ");
               $ui.andstyle.dismissAlert();
             }
           },
@@ -480,22 +512,24 @@ var api = [
     name: "Popup View",
     run: function() {
       let popupView = new $ui.andstyle.Popup({
-        views:[{
-          type:"button",
-          props: {
-            title:"Button"
-          },
-          layout: (make, view) => {
-            make.center.equalTo(view.super)
-          },
-          events: {
-            tapped(){
-              popupView.dismiss()
+        views: [
+          {
+            type: "button",
+            props: {
+              title: "Button"
+            },
+            layout: (make, view) => {
+              make.center.equalTo(view.super);
+            },
+            events: {
+              tapped() {
+                popupView.dismiss();
+              }
             }
           }
-        }]
-      })
-      popupView.show()
+        ]
+      });
+      popupView.show();
     }
   }
 ];
